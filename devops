@@ -1,0 +1,1361 @@
+Assignment No 1
+Q1
+Write a shell script to display current date & time, logged-in user, and shell name.
+
+Steps:
+msc1@spccsd-pc:~$ nano info.sh
+
+#!/bin/bash
+
+echo "Current date and time: $(date)"
+echo "Logged-in user: $(whoami)"
+echo "Shell being used: $SHELL"
+
+msc1@spccsd-pc:~$ chmod +x info.sh
+
+msc1@spccsd-pc:~$ ./info.sh
+
+Output
+Current date and time: Fri Dec 26 11:28:35 AM IST 2025
+Logged-in user: msc1
+Shell being used: /bin/bashnano info.sh
+
+Q2 Create a script to generate multiplication tables (1–10) for numbers 1–5 using nested loops and save to file.
+
+msc1@spccsd-pc:~$ nano multiplication.sh
+#!/bin/bash
+
+# Output file
+output_file="multiplication_table.txt"
+
+# Clear the file if it already exists
+> $output_file
+
+# Generate multiplication tables
+for i in {1..5}
+do
+    echo "Multiplication Table for $i" >> $output_file
+    for j in {1..10}
+    do
+        echo "$i x $j = $((i*j))" >> $output_file
+    done
+    echo "" >> $output_file
+done
+
+# Display the file contents
+cat $output_file
+
+msc1@spccsd-pc:~$ chmod +x multiplication.sh
+msc1@spccsd-pc:~$ ./multiplication.sh
+
+Output
+Multiplication Table for 1
+1 x 1 = 1
+1 x 2 = 2
+1 x 3 = 3
+1 x 4 = 4
+1 x 5 = 5
+1 x 6 = 6
+1 x 7 = 7
+1 x 8 = 8
+1 x 9 = 9
+1 x 10 = 10
+
+Multiplication Table for 2
+2 x 1 = 2
+2 x 2 = 4
+2 x 3 = 6
+2 x 4 = 8
+2 x 5 = 10
+2 x 6 = 12
+2 x 7 = 14
+2 x 8 = 16
+2 x 9 = 18
+2 x 10 = 20
+
+Multiplication Table for 3
+3 x 1 = 3
+3 x 2 = 6
+3 x 3 = 9
+3 x 4 = 12
+3 x 5 = 15
+3 x 6 = 18
+3 x 7 = 21
+3 x 8 = 24
+3 x 9 = 27
+3 x 10 = 30
+
+Multiplication Table for 4
+4 x 1 = 4
+4 x 2 = 8
+4 x 3 = 12
+4 x 4 = 16
+4 x 5 = 20
+4 x 6 = 24
+4 x 7 = 28
+4 x 8 = 32
+4 x 9 = 36
+4 x 10 = 40
+
+Multiplication Table for 5
+5 x 1 = 5
+5 x 2 = 10
+5 x 3 = 15
+5 x 4 = 20
+5 x 5 = 25
+5 x 6 = 30
+5 x 7 = 35
+5 x 8 = 40
+5 x 9 = 45
+5 x 10 = 50
+
+
+Q3 Search all .txt files and count lines containing "error".
+
+msc1@spccsd-pc:~$ nano error_report.sh
+#!/bin/bash
+
+# Directory to search (current directory by default)
+search_dir="."
+
+# Report file
+report_file="error_report.txt"
+
+# Clear report file if it already exists
+> "$report_file"
+
+# Find all .txt files recursively and process them
+find "$search_dir" -type f -name "*.txt" -print0 | while IFS= read -r -d '' file
+do
+    # Count lines containing the word "error" (case-insensitive)
+    count=$(grep -iwc "error" "$file")
+
+    # Append result to report file
+    echo "$file : $count" >> "$report_file"
+done
+
+# Display the report
+cat "$report_file"
+
+
+msc1@spccsd-pc:~$ chmod +x error_report.sh
+msc1@spccsd-pc:~$ ./error_report.sh
+
+
+Output 
+
+./eclipse-workspace/.metadata/.plugins/org.eclipse.jdt.core/javaLikeNames.txt : 0
+./error_report.txt : 0
+./snap/firefox/common/.mozilla/firefox/afegae6g.default/pkcs11.txt : 0
+./snap/firefox/common/.mozilla/firefox/afegae6g.default/datareporting/glean/client_id.txt : 0
+./snap/firefox/common/.mozilla/firefox/Crash Reports/glean/client_id.txt : 0
+./multiplication_table.txt : 0
+./Desktop/abc.txt : 0
+./.eclipse/org.eclipse.oomph.setup/setups/brandingNotificationURIs.txt : 0
+./cpu_usage_log.txt : 0
+./network_report.txt : 0
+./.cache/tracker3/files/first-index.txt : 0
+./.cache/tracker3/files/last-crawl.txt : 0
+
+
+Q4
+ Check network availability using ping.
+
+sc1@spccsd-pc:~$ nano ping_check.sh
+#!/bin/bash
+
+# Check if required arguments are provided
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <hostname/IP> <filename>"
+    exit 1
+fi
+
+host=$1
+filename=$2
+USERNAME=$(whoami)
+logfile="/home/$USERNAME/$filename"
+
+# Get current timestamp
+timestamp=$(date "+%Y-%m-%d %H:%M:%S")
+
+# Ping the host (send 1 packet, wait 2 seconds)
+if ping -c 1 -W 2 "$host" > /dev/null 2>&1
+then
+    echo "[$timestamp] SUCCESS: $host is reachable" >> "$logfile"
+else
+    echo "[$timestamp] FAILURE: $host is not reachable" >> "$logfile"
+fi
+
+
+msc1@spccsd-pc:~$ chmod +x ping_check.sh
+
+msc1@spccsd-pc:~$ ./ping_check.sh google.com network_log.txt
+
+Output
+
+2025-12-22 12:24:56 - FAILURE:  is not reachable
+2025-12-22 12:26:36 - FAILURE: host is not reachable
+2025-12-22 12:28:53 - SUCCESS: google.com is reachable
+2025-12-22 12:29:27 - SUCCESS: 8.8.8.8 is reachable
+
+
+Q5
+Monitor CPU usage and log values.
+
+msc1@spccsd-pc:~$ nano  cpu_monitor.sh
+#!/bin/bash
+
+# Check for number of iterations
+if [ -z "$1" ]; then
+    echo "Enter number of iterations:"
+    read iterations
+else
+    iterations=$1
+fi
+
+logfile="cpu_usage_log.txt"
+> "$logfile"
+
+count=1
+
+while [ $count -le $iterations ]
+do
+    # Extract CPU idle and make sure it's a valid number
+    cpu_idle=$(top -bn1 | grep "Cpu(s)" | awk '{print $8}' | tr -d ',%' | sed 's/[^0-9.]//g')
+
+    # Skip iteration if cpu_idle is empty or invalid
+    if [ -z "$cpu_idle" ]; then
+        echo "Iteration $count: Could not read CPU usage, skipping."
+        count=$((count + 1))
+        continue
+    fi
+
+    # Calculate CPU usage
+    cpu_usage=$(echo "100 - $cpu_idle" | bc -l)
+
+    # Skip logging if CPU usage < 10%
+    if (( $(echo "$cpu_usage < 10" | bc -l) )); then
+        echo "Iteration $count: CPU usage $cpu_usage% < 10%, skipping logging."
+        count=$((count + 1))
+        continue
+    fi
+
+    # Stop monitoring if CPU usage > 90%
+    if (( $(echo "$cpu_usage > 90" | bc -l) )); then
+        echo "$(date '+%Y-%m-%d %H:%M:%S') CPU Usage: $cpu_usage% (HIGH - stopping)" >> "$logfile"
+        break
+    fi
+
+    # Log CPU usage
+    echo "$(date '+%Y-%m-%d %H:%M:%S') CPU Usage: $cpu_usage%" >> "$logfile"
+    echo "Iteration $count: CPU usage $cpu_usage% logged."
+
+    count=$((count + 1))
+    sleep 1
+done
+
+echo "Monitoring complete. CPU usage logged in $logfile"
+cat "$logfile"
+
+msc1@spccsd-pc:~$ chmod +x cpu_monitor.sh
+./cpu_monitor.sh 10
+Enter number of iterations: 10
+output 
+
+
+
+msc1@spccsd-pc:~$ nano cpu_monitor.sh msc1@spccsd-pc:~$ chmod +x cpu_monitor.sh msc1@spccsd-pc:~$ ./cpu_monitor.sh 10 Iteration 1: CPU usage 6.9% < 10%, skipping logging. Iteration 2: CPU usage 1.6% < 10%, skipping logging. Iteration 3: CPU usage .8% < 10%, skipping logging. Iteration 4: Could not read CPU usage, skipping. Iteration 5: CPU usage 3.9% < 10%, skipping logging. Iteration 6: CPU usage 1.6% < 10%, skipping logging. Iteration 7: CPU usage 1.6% < 10%, skipping logging. Iteration 8: CPU usage 1.6% < 10%, skipping logging. Iteration 9: CPU usage .8% < 10%, skipping logging. Iteration 10: CPU usage 1.6% < 10%, skipping logging. Monitoring complete. CPU usage logged in cpu_usage_log.txt is it correct
+
+
+Q 6
+ 
+Monitor CPU usage and log values.
+
+nano process_log.sh
+#!/bin/bash
+
+# Check if log file is provided
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <logfile>"
+    exit 1
+fi
+
+logfile=$1
+
+# Check if file exists
+if [ ! -f "$logfile" ]; then
+    echo "File $logfile does not exist."
+    exit 1
+fi
+
+# Regex for a valid IPv4 address
+ip_regex="([0-9]{1,3}\.){3}[0-9]{1,3}"
+
+# Process the log file
+while IFS= read -r line
+do
+    # Extract IP addresses
+    ips=$(echo "$line" | grep -oE "$ip_regex")
+    valid_ips=""
+    for ip in $ips; do
+        # Validate each octet is <= 255
+        if [[ $ip =~ ^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$ ]]; then
+            valid=true
+            for i in {1..4}; do
+                octet=$(echo "$ip" | cut -d. -f$i)
+                if ((octet > 255)); then
+                    valid=false
+                    break
+                fi
+            done
+            if $valid; then
+                valid_ips="$valid_ips $ip"
+            fi
+        fi
+    done
+
+    # Extract date-time stamps (common format: YYYY-MM-DD HH:MM:SS)
+    datetime=$(echo "$line" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}')
+
+    # Extract error messages (assuming "error" is in the line)
+    error_msg=$(echo "$line" | grep -i "error")
+
+    # Display if any valid IP, datetime, and error message found
+    if [ -n "$valid_ips" ] || [ -n "$datetime" ] || [ -n "$error_msg" ]; then
+        echo "Line: $line"
+        [ -n "$valid_ips" ] && echo "  IP(s): $valid_ips"
+        [ -n "$datetime" ] && echo "  Date-Time: $datetime"
+        [ -n "$error_msg" ] && echo "  Error: $error_msg"
+        echo "------------------------"
+    fi
+done < "$logfile"
+
+chmod +x process_log.sh
+./process_log.sh /path/to/your/logfile.log
+
+./process_log.sh /home/msc1/sample.log
+
+Output
+Line: 2025-12-22 14:12:05 192.168.1.100 ERROR Connection failed to server
+  IP(s):  192.168.1.100
+  Date-Time: 2025-12-22 14:12:05
+  Error: 2025-12-22 14:12:05 192.168.1.100 ERROR Connection failed to server
+------------------------
+Line: 2025-12-22 14:13:10 10.0.0.5 Info User logged in
+  IP(s):  10.0.0.5
+  Date-Time: 2025-12-22 14:13:10
+------------------------
+Line: 2025-12-22 14:14:20 172.16.0.1 error Disk space low
+  IP(s):  172.16.0.1
+  Date-Time: 2025-12-22 14:14:20
+  Error: 2025-12-22 14:14:20 172.16.0.1 error Disk space low
+
+Q7 Monitor CPU usage and log values.
+
+msc1@spccsd-pc:~$ nano  check_prime.sh
+#!/bin/bash
+
+# Function to check if a number is prime
+is_prime() {
+    local num=$1
+
+    # Numbers less than 2 are not prime
+    if (( num < 2 )); then
+        echo "No"
+        return
+    fi
+
+    # Check divisibility from 2 to sqrt(num)
+    for ((i=2; i*i<=num; i++)); do
+        if (( num % i == 0 )); then
+            echo "No"
+            return
+        fi
+    done
+
+    echo "Yes"
+}
+
+# Prompt user for a number
+read -p "Enter a number: " number
+
+# Validate input is a positive integer
+if ! [[ $number =~ ^[0-9]+$ ]]; then
+    echo "Invalid input. Please enter a positive integer."
+    exit 1
+fi
+
+# Call the function
+result=$(is_prime "$number")
+
+# Display result
+if [ "$result" == "Yes" ]; then
+    echo "$number is a prime number."
+else
+    echo "$number is not a prime number."
+fi
+
+
+
+msc1@spccsd-pc:~$ chmod +x check_prime.sh
+msc1@spccsd-pc:~$ ./check_prime.sh
+
+Output
+Enter a number: 17
+17 is a prime number.
+
+
+
+Q8
+ Monitor CPU usage and log values.
+
+msc1@spccsd-pc:~$ nano dir_monitor.sh
+#!/bin/bash
+
+# Check for required arguments
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 <directory_to_monitor> <size_limit_MB> <log_filename>"
+    exit 1
+fi
+
+dir_to_monitor=$1
+size_limit=$2
+filename=$3
+USERNAME=$(whoami)
+logfile="/home/$USERNAME/$filename"
+
+# Check if directory exists
+if [ ! -d "$dir_to_monitor" ]; then
+    echo "Directory $dir_to_monitor does not exist."
+    exit 1
+fi
+
+# Get current size of directory in MB
+dir_size=$(du -sm "$dir_to_monitor" | awk '{print $1}')
+
+# Compare with threshold
+if (( dir_size > size_limit )); then
+    timestamp=$(date "+%Y-%m-%d %H:%M:%S")
+    echo "[$timestamp] WARNING: Directory $dir_to_monitor size is ${dir_size}MB, exceeds limit of ${size_limit}MB." >> "$logfile"
+    echo "Warning logged in $logfile"
+else
+    echo "Directory size ${dir_size}MB is within limit."
+fi
+
+
+msc1@spccsd-pc:~$ chmod +x dir_monitor.sh
+msc1@spccsd-pc:~$ nano dir_monitor.sh
+msc1@spccsd-pc:~$ chmod +x dir_monitor.sh
+msc1@spccsd-pc:~$ /home/msc1/dir_monitor.sh /home/msc1/Documents
+500 dir_size_log.txt
+Output
+Directory size 1MB is within limit.
+
+Monitor CPU usage and log values.
+
+
+Q9
+
+Process CSV using awk.
+
+awk -F, '{sum[$2]+=$3; count[$2]++} END {for(i in sum) print i, sum[i]/count[i]}' file.csv
+🔹 Q10
+
+Backup using tar and schedule using cron.
+
+nano backup.sh
+#!/bin/bash
+tar -czf backup.tar.gz folder
+chmod +x backup.sh
+crontab -e
+
+Add:
+
+0 1 * * * /path/backup.sh
+
+
+
+
+
+
+Assignment 2: Advanced Shell
+
+
+🔹 Q1 Backup directory
+nano backup.sh
+#!/bin/bash
+cp -r /home/user/data /backup/$(date +%F)
+echo "Backup done"
+
+Run:
+
+chmod +x backup.sh
+./backup.sh
+🔹 Q2 Disk usage warning
+df -H | awk '{print $5,$1}'
+🔹 Q3 Jenkins service check
+systemctl is-active jenkins || systemctl start jenkins
+🔹 Q4 Ping log
+ping -c 1 google.com && echo OK >> ping.log
+🔹 Q5 Database backup
+mysqldump -u root -p school > backup.sql
+🔹 Q6 System uptime log
+uptime >> system_uptime.log
+🔹 Q7 Show ports
+netstat -tuln
+🔹 Q8 Update system
+sudo apt update && sudo apt upgrade -y
+🔹 Q9 URL response time
+curl -o /dev/null -s -w "%{time_total}" https://google.com
+🔹 Q10 Top processes
+ps aux --sort=-%mem | head -10
+✅ Assignment 3: Networking
+🔹🔹 Q1
+
+Write a shell script that continuously monitors system uptime and stores it in a TSV file every 5 minutes.
+
+Steps:
+nano uptime.sh
+#!/bin/bash
+while true
+do
+ echo -e "$(date)\t$(uptime -p)" >> uptime_data.tsv
+ sleep 300
+done
+
+Save → Ctrl + O → Enter → Ctrl + X
+
+Run:
+
+chmod +x uptime.sh
+./uptime.sh
+🔹 Q2
+
+Write a TCP socket client-server program in Python to send uptime_data.tsv from server to client.
+
+🔸 Server (EC2)
+nano server.py
+import socket
+
+s = socket.socket()
+s.bind(('', 1234))
+s.listen(1)
+
+conn, addr = s.accept()
+with open("uptime_data.tsv", "rb") as f:
+    conn.sendall(f.read())
+
+conn.close()
+
+Run:
+
+python3 server.py
+🔸 Client (Local Machine)
+nano client.py
+import socket
+
+s = socket.socket()
+s.connect(("SERVER_IP", 1234))
+
+data = s.recv(1024)
+print(data.decode())
+
+s.close()
+
+Run:
+
+python3 client.py
+🔹 Q3
+
+Write a UDP socket client-server program to fetch uptime data.
+
+🔸 Server
+nano udp_server.py
+import socket
+
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.bind(("", 1234))
+
+data, addr = s.recvfrom(1024)
+
+with open("uptime_data.tsv") as f:
+    msg = f.read()
+
+s.sendto(msg.encode(), addr)
+
+Run:
+
+python3 udp_server.py
+🔸 Client
+nano udp_client.py
+import socket
+
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.sendto(b"get", ("SERVER_IP", 1234))
+
+data, _ = s.recvfrom(1024)
+print(data.decode())
+
+Run:
+
+python3 udp_client.py
+🔹 Q4
+
+Write an FTP-based client-server program to download uptime_data.tsv
+
+🔸 Step 1: Install FTP server
+sudo apt update
+sudo apt install vsftpd
+🔸 Step 2: Start service
+sudo systemctl start vsftpd
+🔸 Client (Python)
+nano ftp_client.py
+from ftplib import FTP
+
+ftp = FTP("SERVER_IP")
+ftp.login("username", "password")
+
+with open("uptime_data.tsv", "wb") as f:
+    ftp.retrbinary("RETR uptime_data.tsv", f.write)
+
+ftp.quit()
+
+Run:
+
+python3 ftp_client.py
+🔹 Q5
+
+Write SCP commands for file transfer scenarios
+
+🔸 I. Copy file from EC2 → Local
+scp user@ec2-ip:/home/ubuntu/example.txt /local_backup/
+🔸 II. Copy multiple files
+scp user@ec2-ip:/home/ubuntu/files/* /local_files/
+🔸 III. Copy directory
+scp -r user@ec2-ip:/var/www /web_backup/
+🔸 IV. Local → EC2
+scp report.csv user@ec2-ip:/home/user/reports/
+🔸 V. Multiple files local → EC2
+scp /documents/*.pdf user@ec2-ip:/home/user/docs/
+🔸 VI. Copy directory local → EC2
+scp -r /images user@ec2-ip:/home/user/media/
+🔸 VII. With compression
+scp -C file user@ec2-ip:/path
+🔸 VIII. Preserve permissions
+scp -rp folder user@ec2-ip:/path
+🔸 IX. Verbose mode
+scp -v file user@ec2-ip:/path
+
+
+✅ Assignment 4: Terraform
+
+🔹 Q1
+
+Set up a sample project manually on an Ubuntu EC2 instance:
+
+Install Apache
+Download project
+Deploy and access via browser
+✅ Steps:
+🔸 Step 1: Connect to EC2
+ssh -i key.pem ubuntu@your-ec2-ip
+🔸 Step 2: Update system
+sudo apt update
+🔸 Step 3: Install Apache
+sudo apt install apache2 -y
+
+Start service:
+
+sudo systemctl start apache2
+🔸 Step 4: Download project
+wget https://www.tooplate.com/zip-templates/2135_mini_finance.zip
+🔸 Step 5: Unzip
+sudo apt install unzip -y
+unzip 2135_mini_finance.zip
+🔸 Step 6: Move files to web folder
+sudo cp -r 2135_mini_finance/* /var/www/html/
+🔸 Step 7: Open in browser
+
+👉 http://<EC2-private-IP>
+
+🔹 Q2
+
+Write Terraform config to create EC2 instance and run commands
+
+🔸 Step 1: Create file
+nano main.tf
+🔸 Step 2: Write code
+provider "aws" {
+  region = "ap-south-1"
+}
+
+resource "aws_instance" "example" {
+  ami           = "ami-00bb6a80f"
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "ExampleAppServerInstance"
+  }
+}
+🔸 Step 3: Run Terraform
+terraform init
+terraform validate
+terraform plan
+terraform apply
+
+Type:
+
+yes
+🔸 Step 4: Verify
+
+👉 Check AWS Console → EC2 instance created
+
+🔹 Q3
+
+Use variables.tf to assign Name dynamically
+
+🔸 Step 1: Create variables file
+nano variables.tf
+variable "instance_name" {
+  default = "MyServer"
+}
+🔸 Step 2: Modify main.tf
+nano main.tf
+
+Replace Name:
+
+tags = {
+  Name = var.instance_name
+}
+🔸 Step 3: Run again
+terraform plan
+terraform apply
+🔹 Q4
+
+Create outputs.tf to display instance ID and public IP
+
+🔸 Step 1: Create file
+nano outputs.tf
+🔸 Step 2: Write code
+output "instance_id" {
+  value = aws_instance.example.id
+}
+
+output "public_ip" {
+  value = aws_instance.example.public_ip
+}
+🔸 Step 3: Apply
+terraform apply
+
+👉 Output will show:
+
+Instance ID
+Public IP
+🔹 Q5
+
+Deploy web app using Terraform with security group + user data
+
+🔸 Step 1: Create file
+nano main.tf
+🔸 Step 2: Full config
+provider "aws" {
+  region = "ap-south-1"
+}
+
+resource "aws_security_group" "web_sg" {
+  name = "web-sg"
+
+  ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 80
+    to_port   = 80
+    protocol  = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_instance" "web" {
+  ami           = "ami-00bb6a80f"
+  instance_type = "t2.micro"
+  key_name      = "mykey"
+
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
+
+  user_data = <<-EOF
+              #!/bin/bash
+              apt update
+              apt install apache2 wget unzip -y
+              wget https://www.tooplate.com/zip-templates/2135_mini_finance.zip
+              unzip 2135_mini_finance.zip
+              cp -r 2135_mini_finance/* /var/www/html/
+              systemctl start apache2
+              EOF
+}
+🔸 Step 3: Run
+terraform init
+terraform apply
+🔸 Step 4: Verify
+
+👉 Go to AWS Console
+👉 Copy Public IP
+👉 Open in browser:
+
+http://<public-ip>
+
+Assignment 5
+## Github assignmet
+start the git hub
+git -v
+git config --global user.name "    "
+git config --global user.email  "    "
+cd examuser
+2. Clone the repository
+git clone https://github.com/your-username/my-project.git
+cd my-project
+3. Modify README.md
+vim README.md
+Example content:
+# My Project       This repository is created to demonstrate Git operations such as cloning, committing, and pushing changes.
+4. Commit changes
+git add README.md
+git commit -m "Updated README with project purpose"
+C. Configure global username & email
+git config --global user.name "Your Name"
+git config --global user.email "your-email@example.com"
+To verify:   git config --list
+D. Pull the README.md from repository
+git pull origin main
+E. Edit README.md & create index.html
+Edit README.md again:
+nano README.md
+(Add more )
+Create index.html:
+nano index.html
+Example:
+<!DOCTYPE html>  <html>    <head>
+    <title>My Project</title>
+</head>
+<body>
+    <h1>Welcome to My Project</h1>
+</body>  </html>
+Add both files to staging area:
+git add README.md index.html
+F. Push changes using upstream flag
+Commit changes:  git commit -m "Added index.html and updated README"
+Push with upstream: git push -u origin main
+
+only the required commands for each part of Question 2:
+a) Go to main branch
+git branch
+git checkout main
+b) C0 – Add `<h1>` tag in README.md
+nano README.md ( create md file type anything you want)
+git add README.md
+git commit -m "C0: Added h1 tag in README.md"
+c) C1 – Create a new txt file
+nano file.txt
+git add file.txt
+git commit -m "C1: Created new txt file"
+d) C2 – Modify the txt file
+nano file.txt
+git add file.txt
+git commit -m "C2: Modified txt file"
+e) View differences (Diff)
+git diff
+git diff HEAD~1
+
+f) Push to remote main branch
+git push -u origin main
+Q2.b set C
+## **Branch iss53, Commit C3, Diff, and Push (Commands Only)**
+a) Create and switch to `iss53` branch
+git checkout -b iss53
+b) C3 – Create `index.html` and update `README.md`
+nano index.html
+<!DOCTYPE html>       <html>      <head>
+    <title>My Project</title>
+</head>  <body>
+    <h1>Welcome to My Project</h1>
+    <p>This is the index file created in iss53 branch.</p>
+</body>    </html>
+nano README.md
+git add index.html README.md
+git commit -m "C3: Added index.html and updated README.md in iss53 branch"
+c) Compare commits C1 and C2
+git diff C1 C2
+d) Compare `main` branch with `iss53` branch
+git diff main iss53
+e) Push `iss53` branch to remote repository
+git push -u origin iss53
+## Q2 c
+only the required commands** for Question **2(c)** (`hotfix` branch, commit C4, and push)
+### **a) Create and switch to `hotfix` branch (from main)**
+git checkout main
+git checkout -b hotfix
+### **b) C4 – Update the existing txt file**
+nano file.txt             git add file.txt
+git commit -m "C4: Updated txt file in hotfix branch"
+### **c) Push `hotfix` branch to remote repository**
+git push -u origin hotfix
+## Q2d and e
+# ✅ **(d) Merge `hotfix` into `main` and delete `hotfix`**
+### Step 1: Switch to main branch
+git checkout main
+### Step 2: Merge hotfix into main
+git merge hotfix
+### Step 3: Delete hotfix branch (local)
+git branch -d hotfix
+### (Optional) Delete remote hotfix branch
+git push origin --delete hotfix
+# ✅ **(e) Merge `iss53` into main and delete `iss53`**
+### Step 1: Switch to main branch
+git checkout main
+### Step 2: Merge iss53 into main
+git merge iss53
+### Step 3: Delete iss53 branch (local)
+git branch -d iss53
+### (Optional) Delete remote iss53 branch
+git push origin --delete iss53
+## To install terraform use below commands
+cd ~
+curl -LO https://releases.hashicorp.com/terraform/1.9.5/terraform_1.9.5_linux_amd64.zip
+unzip terraform_1.9.5_linux_amd64.zip
+mkdir -p $HOME/bin mv terraform $HOME/bin/
+echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc  source ~/.bashrc
+terraform -version
+is 1.14.8. You can update by downloading from https://www.terraform.io/downloads.html
+## Terraform  Q1.
+## Set up a sample project using manual configuration for an Ubuntu EC2 instance, incorporating the following steps: 
+# EC2 Apache Sample Project
+# ✅ STEP 1: Connect to EC2
+ssh -i your-key.pem ubuntu@<EC2_PUBLIC_IP>
+# ✅ STEP 2: Switch to root
+sudo -i
+# ✅ STEP 3: Update system
+apt update && apt upgrade -y
+# ✅ STEP 4: Install Apache2
+apt install apache2 -y
+Start Apache:
+systemctl start apache2
+systemctl enable apache2
+# ✅ STEP 5: Install tools
+apt install wget unzip -y
+# ✅ STEP 6: Create sample project
+mkdir sample-project
+nano sample-project/index.html
+👉 Paste this SIMPLE code:
+```html id="e8"
+<!DOCTYPE html>
+<html>    <head>
+    <title>EC2 Project</title>
+</head>    <body>
+    <h1>Apache is Running on EC2 🚀</h1>
+    <p>Sample project deployed successfully.</p>
+</body>     </html>
+Save:
+* CTRL + X
+* Y
+* ENTER
+# ✅ STEP 7: Move project to Apache folder
+rm -rf /var/www/html/*
+cp -r sample-project/* /var/www/html/
+# ✅ STEP 8: Set permissions
+chown -R www-data:www-data /var/www/html/
+chmod -R 755 /var/www/html/
+# ✅ STEP 9: Restart Apache
+systemctl restart apache2
+# ✅ STEP 10: Get Private IP
+hostname -I
+Example output:
+172.31.38.159
+# STEP 11: Open in browser
+http://<PRIVATE_IP>
+Example:
+http://172.31.38.159
+# STEP 12: AWS Security Group
+Make sure:
+* Type: HTTP
+* Port: 80
+* Source: 0.0.0.0/0
+#  FINAL RESULT 
+Apache is Running on EC2 
+Sample project deployed successfully.
+SET A Q2
+first config the aws 
+$ aws configure
+then follow the steps as shown
+AWS EC2 INSTANCE USING TERRAFORM
+Region: ap-south-1
+Instance: t3.micro
+Name Tag: ExampleAppServerInstance
+STEP 1: Create directory
+mkdir terraform-ec2
+cd terraform-ec2
+STEP 2: Create file
+nano main.tf
+STEP 3: Terraform Configuration (main.tf)
+terraform {
+  required_version = ">= 1.3.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.0"
+    }
+  }
+}
+provider "aws" {
+  region = "ap-south-1"
+}
+resource "aws_instance" "example_app_server" {
+  ami           = "ami-00bb6a80f"(put your ami id)
+  instance_type = "t3.micro"
+  tags = {
+    Name = "ExampleAppServerInstance"
+  }
+}
+STEP 4: Initialize Terraform
+terraform init
+STEP 5: Validate Configuration
+terraform validate
+STEP 6: Create Execution Plan
+terraform plan
+STEP 7: Apply Configuration
+terraform apply
+(Type "yes" when prompted)
+STEP 8: Verify in AWS Console
+Go to AWS Management Console:
+EC2 → Instances → Running Instances
+Check:
+- Instance Name: ExampleAppServerInstance
+- Region: ap-south-1 (Mumbai)
+- Instance Type: t3.micro
+- AMI ID: ami-00bb6a80f
+FINAL RESULT
+EC2 instance is successfully created using Terraform.
+##SETB q3 terraform
+##AWS EC2 INSTANCE USING VARIABLES
+Region: ap-south-1
+Instance Type: t3.micro
+STEP 1: Create directory
+mkdir terraform-ec2
+cd terraform-ec2
+STEP 2: Create main.tf
+nano main.tf
+terraform {
+  required_version = ">= 1.3.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.0"
+    }
+  }
+}
+provider "aws" {
+  region = "ap-south-1"
+}
+resource "aws_instance" "example_app_server" {
+  ami           = "ami-00bb6a80f"(put your ami id)
+  instance_type = "t3.micro"
+  tags = {
+    Name = var.instance_name
+  }
+}
+STEP 3: Create variables.tf
+nano variables.tf
+variable "instance_name" {
+  description = "Name tag for EC2 instance"
+  type        = string
+  default     = "ExampleAppServerInstance"
+}
+STEP 4: Terraform Commands
+terraform init
+terraform validate
+terraform plan
+terraform apply
+##SETB Q8
+##AWS EC2 INSTANCE OUTPUTS USING TERRAFORM
+Region: ap-south-1
+Instance Type: t3.micro
+STEP 1: Create directory
+mkdir terraform-ec2
+cd terraform-ec2
+STEP 2: Create main.tf
+nano main.tf
+terraform {
+  required_version = ">= 1.3.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.0"
+    }
+  }
+}
+provider "aws" {
+  region = "ap-south-1"
+}
+resource "aws_instance" "example_app_server" {
+  ami           = "ami-00bb6a80f"(put your ami id)
+  instance_type = "t3.micro"
+  tags = {
+    Name = "ExampleAppServerInstance"
+  }
+}
+STEP 3: Create outputs.tf
+nano outputs.tf
+output "instance_id" {
+  description = "ID of the EC2 instance"
+  value       = aws_instance.example_app_server.id
+}
+output "public_ip" {
+  description = "Public IP address of EC2 instance"
+  value       = aws_instance.example_app_server.public_ip
+}
+STEP 4: Terraform Commands
+terraform init
+terraform validate
+terraform plan
+terraform apply
+STEP 5: Outputs:
+instance_id = "i-xxxxxxxxxxxx"
+public_ip   = "xx.xx.xx.xx"
+
+## TERRAFORM AWS EC2 INSTANCE DEPLOYMENT
+Region: ap-south-1
+Instance Type: t3.micro
+Security Group: web-sg
+Key Pair: terraQ2
+STEP 1: Create project directory
+mkdir terraform-ec2
+cd terraform-ec2
+STEP 2: Create Terraform files
+nano main.tf
+nano outputs.tf
+nano user_data.sh
+STEP 3: main.tf (UPDATED & CORRECT)
+terraform {
+  required_version = ">= 1.3.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.0"
+    }
+  }
+}
+provider "aws" {
+  region = "ap-south-1"
+}
+resource "aws_security_group" "web_sg" {
+  name        = "web-sg-01"
+  description = "Allow SSH and HTTP traffic"
+  ingress {
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+resource "aws_instance" "web_server" {
+  ami           = "ami-05d2d839d4f73aafb"(put yours ami id)
+  instance_type = "t3.micro"
+  key_name      = "terraQ2"
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
+  root_block_device {
+    volume_size = 10
+    volume_type = "gp2"
+  }
+  user_data = file("user_data.sh")
+  tags = {
+    Name = "MiniFinanceWebServer"
+  }
+}
+STEP 4: user_data.sh (WEB APP SETUP)
+apt update -y
+apt install apache2 wget unzip vim -y
+systemctl start apache2
+systemctl enable apache2
+cd /var/www/html
+wget https://www.tooplate.com/zip-templates/2135_mini_finance.zip
+unzip 2135_mini_finance.zip
+cp -r 2135_mini_finance/* .
+rm -rf 2135_mini_finance.zip 2135_mini_finance
+STEP 5: outputs.tf (FIXED)
+output "instance_id" {
+  description = "ID of the EC2 instance"
+  value       = aws_instance.web_server.id
+}
+output "public_ip" {
+  description = "Public IP address of EC2 instance"
+  value       = aws_instance.web_server.public_ip
+}
+STEP 6: Terraform Commands
+terraform init
+terraform validate
+terraform plan
+terraform apply
+(Type "yes" when prompted)
+STEP 7: Verify in AWS Console
+Security Groups:
+- web-sg-01 allows:
+  - SSH (22)
+  - HTTP (80)
+STEP 8: Access Web Application
+Open browser:
+http://<PUBLIC-IP>
+FINAL RESULT
+✔ EC2 instance created successfully     ✔ Apache installed via user_data
+✔ Mini Finance website deployed        ✔ Accessible via public IP
+✔ Security group configured correctly
+
+##docker assignment 1 and 2
+Assignment 6
+1. Pull Ubuntu Image
+Bash
+docker pull ubuntu:latest
+🔹 2. Run Ubuntu Container
+docker run -it -d --name ubuntu-os ubuntu:latest
+🔹 3. Execute Commands Inside Container
+docker exec -it ubuntu-os mkdir myfolder
+docker exec -it ubuntu-os ls
+🔹 4. Stop & Remove Container
+docker stop ubuntu-os
+docker rm ubuntu-os
+🔹 5. Pull PostgreSQL Image
+docker pull postgres:latest
+🔹 6. Run PostgreSQL Container
+docker run -d --name postgres-user1 -e POSTGRES_PASSWORD=mypassword postgres:latest
+🔹 7. Access PostgreSQL
+docker exec -it postgres-user1 psql -U postgres
+👉 Inside PostgreSQL:
+SQL
+CREATE DATABASE testdb;
+\q
+🔹 8. Stop & Remove PostgreSQL Container
+docker stop postgres-user1
+docker rm postgres-user1
+🔹 9. Create Node App Files
+Make sure these files exist:
+server.js
+package.json
+Dockerfile
+🔹 10. Example Dockerfile
+Dockerfile
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+CMD ["node", "server.js"]
+🔹 11. Build Docker Image
+docker build -t node-docker-app .
+🔹 12. Run Node Container
+docker run -d -p 3000:3000 --name node-app node-docker-app
+🔹 13. Tag Image for Docker Hub
+docker tag node-docker-app add2026/node-docker-app:latest//add2026:account user name
+🔹 14. Login to Docker Hub
+docker login
+🔹 15. Push Image
+docker push add2026/node-docker-app:latest//add2026:account user name
+🔹 16. (Optional) Clean Up
+docker stop node-app
+docker rm node-app
+
+Assignment 7
+Set-a
+
+docker network create mongo-network
+docker run -d \
+--name mongodb \
+--network mongo-network \
+-p 27017:27017 \
+-e MONGO_INITDB_ROOT_USERNAME=admin \
+-e MONGO_INITDB_ROOT_PASSWORD=password \
+mongo
+docker ps
+set-b
+
+docker run -d \
+--name mongo-express \
+--network mongo-network \
+-p 8081:8081 \
+-e ME_CONFIG_MONGODB_ADMINUSERNAME=admin \
+-e ME_CONFIG_MONGODB_ADMINPASSWORD=password \
+-e ME_CONFIG_MONGODB_SERVER=mongodb \
+mongo-express
+ME_CONFIG_MONGODB_SERVER=mongodb
+http://localhost:8081//check on browser
+set-c
+
+vi docker-compose.yml
+
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+  mongo-express:
+    image: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_SERVER: mongodb
+docker compose up -d
+http://localhost:8081//check on browser
+docker compose down
+
+
+server.js
+const http=require('http');
+const server=http.createServer((req,res)=>{
+	res.end("hello from Docker");
+});
+const port=3000;
+server.listen(port,()=>{
+	console.log(`Server running on port ${port}`);
+});
+
+
+
+Dockerfile
+
+
+
+
+package.json
+
+{
+	"name":"node-docker-app",
+	"version":"1.0.0",
+	"main":"server.js",
+	"scripts":{
+		"start":"node server.js"
+	}
+}
+
+
